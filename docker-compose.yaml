@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
 
   backend:
-    build: ./Skills_Utilization
+    image: ghcr.io/ahmaddmour745-wq/skills-utilization:latest
     container_name: skills_backend
     env_file:
       - .env
