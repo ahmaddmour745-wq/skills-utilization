@@ -8,3 +8,4 @@ __pycache__/
 .venv/
 venv/
 Skills_Utilization/.git-backup-original/
+actions-runner/
