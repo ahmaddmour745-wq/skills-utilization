@@ -4,6 +4,10 @@ on:
   push:
     branches: [ "main" ]
 
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   security-scan:
     runs-on: ubuntu-latest
@@ -13,49 +17,53 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Initialize report file
-        run: |
-          echo "Security Scan Report - $(date)" > security-report.txt
-          echo "===========================================" >> security-report.txt
-
       - name: Run TruffleHog (secret scanning)
         continue-on-error: true
         run: |
           set +e
-          echo "" >> security-report.txt
-          echo "----- TruffleHog: Secret Scanning -----" >> security-report.txt
-          docker run --rm -v "$PWD:/repo" trufflesecurity/trufflehog:latest filesystem /repo --no-update >> security-report.txt 2>&1
-          echo "TruffleHog exit code: $?" >> security-report.txt
+          docker run --rm -v "$PWD:/repo" trufflesecurity/trufflehog:latest filesystem /repo --no-update --json > trufflehog-results.json 2>&1
+          echo "TruffleHog exit code: $?"
           exit 0
 
       - name: Run Hadolint (Dockerfile linting)
         continue-on-error: true
         run: |
           set +e
-          echo "" >> security-report.txt
-          echo "----- Hadolint: Dockerfile Linting -----" >> security-report.txt
-          docker run --rm -i hadolint/hadolint < ./Skills_Utilization/dockerfile >> security-report.txt 2>&1
-          echo "Hadolint exit code: $?" >> security-report.txt
+          docker run --rm -i hadolint/hadolint hadolint --format sarif - < ./Skills_Utilization/dockerfile > hadolint-results.sarif 2>&1
+          echo "Hadolint exit code: $?"
           exit 0
 
       - name: Run Bandit (Python security linting)
         continue-on-error: true
         run: |
           set +e
-          echo "" >> security-report.txt
-          echo "----- Bandit: Python Security Linting -----" >> security-report.txt
-          pip install --quiet bandit
-          bandit -r ./Skills_Utilization -f txt >> security-report.txt 2>&1
-          echo "Bandit exit code: $?" >> security-report.txt
+          pip install --quiet bandit bandit-sarif-formatter
+          bandit -r ./Skills_Utilization -f sarif -o bandit-results.sarif
+          echo "Bandit exit code: $?"
           exit 0
 
-      - name: Print full report to logs
+      - name: Upload Hadolint SARIF to GitHub Security tab
         if: always()
-        run: cat security-report.txt
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: hadolint-results.sarif
+          category: hadolint
+        continue-on-error: true
 
-      - name: Upload report as artifact
+      - name: Upload Bandit SARIF to GitHub Security tab
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: bandit-results.sarif
+          category: bandit
+        continue-on-error: true
+
+      - name: Upload raw reports as artifact (backup, includes TruffleHog)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: security-report
-          path: security-report.txt
+          name: security-reports-raw
+          path: |
+            trufflehog-results.json
+            hadolint-results.sarif
+            bandit-results.sarif
