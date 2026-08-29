@@ -10,3 +10,5 @@ venv/
 Skills_Utilization/.git-backup-original/
 actions-runner/
 actions-runner/
+vault/
+docker-compose.yaml
