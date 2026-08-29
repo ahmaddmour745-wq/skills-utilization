@@ -1,0 +1,61 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Initialize report file
+        run: |
+          echo "Security Scan Report - $(date)" > security-report.txt
+          echo "===========================================" >> security-report.txt
+
+      - name: Run TruffleHog (secret scanning)
+        continue-on-error: true
+        run: |
+          set +e
+          echo "" >> security-report.txt
+          echo "----- TruffleHog: Secret Scanning -----" >> security-report.txt
+          docker run --rm -v "$PWD:/repo" trufflesecurity/trufflehog:latest filesystem /repo --no-update >> security-report.txt 2>&1
+          echo "TruffleHog exit code: $?" >> security-report.txt
+          exit 0
+
+      - name: Run Hadolint (Dockerfile linting)
+        continue-on-error: true
+        run: |
+          set +e
+          echo "" >> security-report.txt
+          echo "----- Hadolint: Dockerfile Linting -----" >> security-report.txt
+          docker run --rm -i hadolint/hadolint < ./Skills_Utilization/dockerfile >> security-report.txt 2>&1
+          echo "Hadolint exit code: $?" >> security-report.txt
+          exit 0
+
+      - name: Run Bandit (Python security linting)
+        continue-on-error: true
+        run: |
+          set +e
+          echo "" >> security-report.txt
+          echo "----- Bandit: Python Security Linting -----" >> security-report.txt
+          pip install --quiet bandit
+          bandit -r ./Skills_Utilization -f txt >> security-report.txt 2>&1
+          echo "Bandit exit code: $?" >> security-report.txt
+          exit 0
+
+      - name: Print full report to logs
+        if: always()
+        run: cat security-report.txt
+
+      - name: Upload report as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report
+          path: security-report.txt
