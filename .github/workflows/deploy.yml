@@ -55,7 +55,7 @@ jobs:
         run: |
           cd /home/aau/Desktop/project3
           docker compose down
-          ./vault.sh
+          ./vault.sh 
           docker compose up -d --remove-orphans
 
       - name: Clean up old images
