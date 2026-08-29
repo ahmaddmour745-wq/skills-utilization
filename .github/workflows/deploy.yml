@@ -53,8 +53,10 @@ jobs:
 
       - name: Pull latest image and restart
         run: |
-          docker compose -f /home/aau/Desktop/docker-compose.yaml pull backend
-          docker compose -f /home/aau/Desktop/docker-compose.yaml up -d --remove-orphans
+          cd /home/aau/Desktop/project3
+          docker compose down
+          ./vault.sh
+          docker compose up -d --remove-orphans
 
       - name: Clean up old images
         run: docker image prune -f
