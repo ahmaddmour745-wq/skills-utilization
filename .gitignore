@@ -12,3 +12,6 @@ actions-runner/
 actions-runner/
 vault/
 docker-compose.yaml
+project3/.env
+project3/vault/key
+project3/vault/data/
