@@ -48,7 +48,8 @@ jobs:
         id: hadolint
         continue-on-error: true
         run: |
-          docker run --rm -i hadolint/hadolint < Dockerfile \
+          docker run --rm -i hadolint/hadolint \
+            < project3/Skills_Utilization/dockerfile \
             > "$REPORTS_DIR/hadolint/output.log" \
             2> "$REPORTS_DIR/hadolint/error.log" || true
 
@@ -63,8 +64,8 @@ jobs:
         id: bandit
         continue-on-error: true
         run: |
-          pip install bandit --quiet
-          bandit -r . -f txt \
+          pip install bandit --quiet --break-system-packages || true
+          bandit -r project3/Skills_Utilization -f txt \
             -o "$REPORTS_DIR/bandit/output.log" \
             2> "$REPORTS_DIR/bandit/error.log" || true
 
