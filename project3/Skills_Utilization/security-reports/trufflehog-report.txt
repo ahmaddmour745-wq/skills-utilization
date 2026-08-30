@@ -1,0 +1,28 @@
+Unable to find image 'trufflesecurity/trufflehog:latest' locally
+latest: Pulling from trufflesecurity/trufflehog
+f7ee36c9aa34: Pulling fs layer
+fbb7b6f067ab: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+99855ed812e7: Pulling fs layer
+4b6a87546921: Pulling fs layer
+99855ed812e7: Waiting
+4b6a87546921: Waiting
+4f4fb700ef54: Verifying Checksum
+4f4fb700ef54: Download complete
+fbb7b6f067ab: Verifying Checksum
+fbb7b6f067ab: Download complete
+f7ee36c9aa34: Download complete
+f7ee36c9aa34: Pull complete
+4b6a87546921: Verifying Checksum
+4b6a87546921: Download complete
+99855ed812e7: Verifying Checksum
+99855ed812e7: Download complete
+fbb7b6f067ab: Pull complete
+4f4fb700ef54: Pull complete
+99855ed812e7: Pull complete
+4b6a87546921: Pull complete
+Digest: sha256:deb2af10659a488a14d262a323addcde099d99827a1cf1dc4e93c17915c39f08
+Status: Downloaded newer image for trufflesecurity/trufflehog:latest
+{"level":"info-0","ts":"2026-08-30T10:42:13Z","logger":"trufflehog","msg":"running source","source_manager_worker_id":"4SKeL","with_units":true}
+{"SourceMetadata":{"Data":{"Filesystem":{"file":"/repo/.git/config","line":12}}},"SourceID":1,"SourceType":15,"SourceName":"trufflehog - filesystem","DetectorType":8,"DetectorName":"Github","DetectorDescription":"GitHub is a platform for version control and collaboration. Personal access tokens (PATs) can be used to access and modify repositories and other resources.","DecoderName":"BASE64","Verified":false,"VerificationFromCache":false,"Raw":"ghs_15368_eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9","RawV2":"","Redacted":"","ExtraData":{"rotation_guide":"https://howtorotate.com/docs/tutorials/github/","version":"2"},"StructuredData":null,"SecretParts":{"key":"ghs_15368_eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9"}}
+{"level":"info-0","ts":"2026-08-30T10:42:13Z","logger":"trufflehog","msg":"finished scanning","chunks":117,"bytes":454208,"verified_secrets":0,"unverified_secrets":1,"scan_duration":"95.579099ms","trufflehog_version":"3.97.1","verification_caching":{"Hits":0,"Misses":2,"HitsWasted":0,"AttemptsSaved":0,"VerificationTimeSpentMS":169}}
